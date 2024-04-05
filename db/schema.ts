@@ -10,6 +10,7 @@ export const courses = pgTable("courses",{
 // many-to-many relation
 export const courseRelations = relations(courses, ({many})=>({
     userProgress: many(userProgress),
+    units: many(units)
 }))
 
 export const userProgress = pgTable("user_progress", {
@@ -20,6 +21,37 @@ export const userProgress = pgTable("user_progress", {
     hearts: integer("hearts").notNull().default(5),
     points: integer("points").notNull().default(0)
 })
+
+export const units = pgTable("units", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(), // Ex - Unit 69
+    description: text("description").notNull(), // Ex - Learn the starters of Croatian
+    courseId: integer("course_id").references(()=> courses.id,{onDelete:"cascade"}).notNull(),
+    order: integer("order").notNull()
+})
+
+export const lessons = pgTable("lessons", {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    unitId: integer("unit_id").notNull().references(()=>units.id, {onDelete:"cascade"}),
+    order: integer("order").notNull()
+})
+
+export const lessonRelations = relations(lessons, ({one, many})=>({
+    unit: one(units, {
+        fields: [lessons.unitId],
+        references: [units.id]
+    })
+}))
+
+// Not yet written the xport keyword
+export const unitRelations = relations(units, ({many, one})=>({
+    course: one(courses, {
+        fields: [units.courseId],
+        references: [courses.id]
+    }),
+    lesson: many(lessons)
+}))
 
 export const userProgressRelations = relations(userProgress, ({one})=>({
     activeCourse: one(courses, {

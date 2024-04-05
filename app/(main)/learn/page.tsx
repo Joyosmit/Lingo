@@ -15,6 +15,7 @@ const page = async() => {
         <div className="flex flex-row-reverse gap-[48px] px-6">
             <StickyWrapper>
                 <UserProgress
+                //@ts-ignore
                 activeCourse = {userProgress.activeCourse}
                 hearts = {userProgress.hearts}
                 points = {userProgress.points}
@@ -22,7 +23,9 @@ const page = async() => {
                 />
             </StickyWrapper>
             <FeedWrapper>
-                <Header title={userProgress.activeCourse.title}/>
+                <Header
+                //@ts-ignore
+                title={userProgress.activeCourse.title}/>
                 
             </FeedWrapper>
         </div>
